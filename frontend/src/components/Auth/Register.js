@@ -1,156 +1,257 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import {requestUsers} from "../../store/actions";
-import connect from "react-redux/es/connect/connect";
+/* eslint-disable */
 
-class Register extends Component {
-    constructor() {
-        super();
+import React, { Component } from "react";
+import { connect } from 'react-redux';
+import * as icons from '../../assets';
+import './index.scss';
+import classnames from "classnames";
+import {addUser} from "../../store/actions";
+import {Link} from "react-router-dom";
+
+import OAuth from './OAuth.js';
+import {GoogleLogin} from "react-google-login";
+import axios from "axios";
+
+class Register extends React.Component {
+    constructor(props) {
+        super(props);
 
         this.state = {
-            name: "",
+            firstName: "",
+            lastName: "",
             email: "",
             password: "",
-            password2: "",
-            errors: {}
+            errors: {},
+            isPasswordShow: false
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.errors) {
-            this.setState({
-                errors: nextProps.errors
-            });
-        }
-    }
+
 
     onChange = e => {
         this.setState({ [e.target.id]: e.target.value });
+
+        function validateEmail(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+
+        if(validateEmail(this.state.email)) {
+            this.setState({
+                isValidEmail: true
+            });
+        } else {
+            this.setState({
+                isValidEmail: false
+            });
+        }
     };
 
     onSubmit = e => {
         e.preventDefault();
         const newUser = {
-            name: this.state.name,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
             email: this.state.email,
             password: this.state.password,
-            password2: this.state.password2,
+            rights: 2,
+            status: 0
         };
 
-        axios.post('/api/users/register', newUser)
-            .then(res => {
-                console.log('>> Register 1',res);
-                alert('Register Success!');
-            })
-            .catch(errors => {
-                if (errors.response) {
-                    // Request made and server responded
-                    console.log('e',errors.response.data);
-                    this.setState({
-                        errors: errors.response.data
-                    });
-                } else if (errors.request) {
-                    // The request was made but no response was received
-                    console.log('E', errors.request);
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', errors.message);
-                }
-            })
+        // if(this.state.firstName) {
+        //     this.setState({
+        //        errors: {
+        //            ...this.state.errors,
+        //            firstName: ''
+        //        }
+        //     });
+        // }
+
+        this.props.addUser(newUser);
     };
 
-    getUnits = e => {
-      e.preventDefault();
+    showPassword = (e) => {
+        this.setState({ isPasswordShow: !this.state.isPasswordShow });
+    };
 
-      axios.get('/api/users/units', {})
-          .then(res => {
-              console.log('>> Get Units', res)
-          })
-          .catch(err => {
-              console.log('>> Get Units', err.res)
-          })
+    generator = () => {
+        let chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+        let string_length = 8;
+        let randomstring = '';
+        let charCount = 0;
+        let numCount = 0;
+
+        for (var i=0; i<string_length; i++) {
+            if((Math.floor(Math.random() * 2) == 0) && numCount < 3 || charCount >= 5) {
+                let rnum = Math.floor(Math.random() * 10);
+                randomstring += rnum;
+                numCount += 1;
+            } else {
+                let rnum = Math.floor(Math.random() * chars.length);
+                randomstring += chars.substring(rnum,rnum+1);
+                charCount += 1;
+            }
+        }
+
+        return randomstring;
+    };
+
+    responseGoogle = (response) => {
+        const password = this.generator();
+
+        const newUser = {
+            firstName: response.profileObj.givenName,
+            lastName: response.profileObj.familyName,
+            email: response.profileObj.email,
+            password: password,
+            isGoogleAuth: true,
+            rights: 2,
+            status: 0,
+        };
+
+        this.props.addUser(newUser);
+        console.log('>> newUser', response);
+        this.setState({
+            firstName: response.profileObj.givenName,
+            lastName: response.profileObj.familyName,
+            email: response.profileObj.email,
+        });
     };
 
     render() {
+        const errors = this.props.errors;
 
         if(this.props.isLoggedIn)
             window.location.href = './';
 
         return (
-            <section className={"form"}>
+            <section className={"auth"}>
                 <div className="wr">
-                    <h1>Registration</h1>
-                        <form noValidate onSubmit={this.onSubmit}>
-                            <div className="input-field col s12">
-                                <label htmlFor="name">Name
-                                {this.state.errors.name}
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.name}
-                                    id="name"
-                                    type="text"
-                                /></label>
+                    <div className="cols">
+                        <div className="col col1">
+
+                        </div>
+                        <div className="col col2">
+                            <div className="authForm">
+                                <div className="authForm_head">
+                                    <div className="authForm_title">Sign Up</div>
+                                    <div className="authForm_info">
+                                        <p>Already have an account?</p>
+                                        <Link to={"/login"}>Login!</Link>
+                                    </div>
+                                </div>
+                                <form className={"authForm_body"} noValidate onSubmit={this.onSubmit}>
+                                    <label className={"label50 label50-left"}>
+                                        <span>First name</span>
+                                        <input type="text"
+                                               onChange={this.onChange}
+                                               value={this.state.firstName}
+                                               placeholder={"Your first name"}
+                                               id={"firstName"}
+                                               className={classnames("", {
+                                                   invalid: this.state.errors && this.state.errors.firstName
+                                               })}
+                                        />
+                                        {
+                                            errors && errors.firstName ? <p className={"labelError"}>Email not found</p> : null
+                                        }
+                                    </label>
+                                    <label className={"label50 label50-right"}>
+                                        <span>Last name</span>
+                                        <input type="text"
+                                               onChange={this.onChange}
+                                               value={this.state.lastName}
+                                               placeholder={"Your last name"}
+                                               id={"lastName"}
+                                               className={classnames("", {
+                                                   invalid: errors && errors.lastName
+                                               })}
+                                        />
+                                        {
+                                            errors && errors.lastName ? <p className={"labelError"}>Email not found</p> : null
+                                        }
+                                    </label>
+                                    <label>
+                                        <span>Email</span>
+                                        <input
+                                            onChange={this.onChange}
+                                            value={this.state.email}
+                                            error={errors && errors.email}
+                                            placeholder={"Your working email"}
+                                            id={"email"}
+                                            type={"email"}
+                                            className={classnames("", {
+                                                invalid: errors && errors.email
+                                            })}
+                                        />
+                                        {
+                                            errors && errors.email ? <p className={"labelError"}>That address is already in use. <Link to={"/login"}>Log in</Link></p> : <p className={"labelInfo"}>We'll sent confirmation link on this address</p>
+                                        }
+                                    </label>
+                                    <label>
+                                        <span>Password</span>
+                                        <input
+                                            onChange={this.onChange}
+                                            value={this.state.password}
+                                            error={errors && errors.password}
+                                            id={"password"}
+                                            placeholder={"I know, it's our secret"}
+                                            type={(this.state.isPasswordShow) ? "text" : "password"}
+                                            className={classnames("", {
+                                                invalid: errors && errors.password
+                                            })}
+                                        />
+                                        {
+                                            errors && errors.password ? <p className={"labelError"}>Oops. That password isn't right. <a
+                                                href="" className={"link"}>Recover your password?</a></p> : null
+                                        }
+                                        <a href="javascript:void(0);" className={"showPassword"}>
+                                            <img src={icons.EYE} alt="" className="labelIcon" onClick={this.showPassword} />
+                                        </a>
+                                    </label>
+                                    <div className="authForm_checkinfo authForm_checkinfo-register">
+                                        <p>By clicking ‘’Continue’’ I agree to Service name <a>Terms of Use</a> and <a>Privacy Policy</a></p>
+                                    </div>
+                                    <button
+                                        type={"submit"}
+                                        className={this.state.isValidEmail ? "btn btn-blue" : "btn btn-blue btn-disabled"}
+                                        disabled={!this.state.isValidEmail}
+                                    >
+                                        Continue
+                                    </button>
+                                    <GoogleLogin
+                                        clientId="588274163618-8bl29h1f62m0hh4gv9dj2k9mg02acvuj.apps.googleusercontent.com"
+                                        buttonText="Sign up with Google"
+                                        onSuccess={this.responseGoogle}
+                                        onFailure={this.responseGoogle}
+                                        cookiePolicy={'single_host_origin'}
+                                        className={"btn btn-google"}
+                                    >
+                                        <img src={icons.GOOGLE} alt=""/>
+                                        Sign up with Google
+                                    </GoogleLogin>
+                                </form>
                             </div>
-                            <div className="input-field col s12">
-                                <label htmlFor="email">Email
-                                {this.state.errors.email}
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.email}
-                                    id="email"
-                                    type="email"
-                                /></label>
-                            </div>
-                            <div className="input-field col s12">
-                                <label htmlFor="password">Password
-                                {this.state.errors.password}
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.password}
-                                    id="password"
-                                    type="password"
-                                /></label>
-                            </div>
-                            <div className="input-field col s12">
-                                <label htmlFor="password2">Confirm Password
-                                {this.state.errors.password2}
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.password2}
-                                    id="password2"
-                                    type="password"
-                                /></label>
-                            </div>
-                            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                                <button
-                                    style={{
-                                        width: "150px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px",
-                                        marginTop: "1rem"
-                                    }}
-                                    type="submit"
-                                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                                >
-                                    Sign up
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
+                </div>
             </section>
         );
+
     }
 }
-const mapState = state => ({
-    errors: state.authReducer.errors,
-    isLoggedIn: state.authReducer.isLoggedIn
+
+const mapState = (state) => ({
+    currentUser: state.authReducer.currentUser,
+    isLoggedIn: state.authReducer.isLoggedIn,
+    userInfo: state.authReducer.user,
+    errors: state.authReducer.errors
 });
 
 const mapDispatch = (dispatch) => ({
-    // requestUsers: data => {
-    //     dispatch(requestUsers(data))
-    // }
+    addUser: data => {
+        dispatch(addUser(data))
+    }
 });
 
 export default connect(mapState, mapDispatch)(Register)

@@ -9,29 +9,17 @@ const users = require('./routes/api/users');
 
 const app = express();
 
-
-// const mongoose = require('mongodb');
 app.use(
     bodyParser.urlencoded({
         extended: false
     })
 );
 
-app.use(bodyParser.json());
+// change it
+app.use(bodyParser.json({
+    limit: '10000000000000000kb'
+}));
 
-
-// mongoose.connect('mongodb://localhost:27017/gelo', { useNewUrlParser: true });
-// const mongo = require('mongodb').MongoClient;
-
-// let MongoClient = require('mongodb').MongoClient;
-//
-// MongoClient.connect('mongodb://localhost:27017/gelo', function(err, db) {
-//     if(!err) {
-//         console.log('>> Mongo Connected!');
-//     } else {
-//         console.log('>> Mongo', err)
-//     }
-// });
 
 
 const db = require('./config/keys').mongoURI;
@@ -57,14 +45,7 @@ app.post('/api/test', (req, res) => {
     res.send('hello!');
 });
 
-// app.get('/getme', (req, res) => {
-//     const userData = db.collection('users').find({});
-//    res.send('Hello!', userData);
-// });
 
-// 
-
-// Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
     app.use(express.static('client/build'));

@@ -1,0 +1,206 @@
+.nav ul, #authMenu {
+    display: flex;
+    align-items: center;
+}
+
+#authMenu a {
+    margin-left: 35px;
+}
+
+.nav ul a {
+    margin-right: 35px;
+}
+
+section {
+    padding: 70px 0;
+}
+
+.wr {
+    width: 1170px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 85%;
+}
+
+#landing h1 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#landing .btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#landing .btn {
+    margin: 0 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #ededed;
+    color: #333;
+    width: 150px;
+}
+
+.unitsRow {
+    padding: 60px 0;
+
+}
+
+.unitsRow .wr {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.unitsRow .tables {
+    width: 60%;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.unitsRow .table {
+    margin-top: 0;
+    width: 100%;
+}
+
+.unitsRow .tables h2 {
+    margin-bottom: 10px;
+}
+
+.unitsRow .createUnit {
+    width: 40%;
+    padding-left: 60px;
+}
+
+form {
+    border: 1px solid #ededed;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+form input {
+    height: 40px;
+    border: 1px solid #ededed;
+    margin-top: 5px;
+}
+
+.createUnit h2 {
+    margin-bottom: 10px;
+}
+
+input {
+    font-size: 15px;
+    padding: 0 10px;
+}
+
+.wr h1 {
+    margin-bottom: 15px;
+}
+
+.form form .btn {
+    margin-top: 20px;
+}
+
+.form form {
+    width: 450px;
+}
+
+.table_details {
+    padding: 10px 20px;
+    padding-bottom: 20px;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table_col {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+}
+
+.table_col select {
+    height: 30px;
+    border-radius: 0px;
+    border: 1px solid #ededed;
+    background: none;
+    margin-top: 1px;
+}
+
+.table_col input {
+    height: 30px;
+    margin-top: 1px;
+    border: none;
+    border-bottom: 1px solid #ededed;
+    padding: 0;
+    font-size: 15px;
+}
+
+.table_line {
+    width: 220px;
+}
+
+.table .btn {
+    height: 35px;
+    font-size: 13px;
+}
+
+.tb {
+    border: 1px solid #ededed;
+}
+
+.tb input {
+    border: none;
+    border-bottom: 1px solid #ededed;
+    height: 25px;
+    font-size: 14px;
+    text-align: right;
+    padding: 0;
+    display: inline;
+    width: auto;
+}
+
+.tb_line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 15px;
+    height: 40px;
+    border-bottom: 1px solid #ededed;
+}
+
+.tb_line:last-child {
+    border-bottom: none;
+}
+
+#landing .wr {
+    width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#landing h2 {
+    margin-bottom: 10px;
+}
+
+#updateProfile {
+    margin-right: auto !important;
+    margin-left: auto !important;
+    margin-top: 40px !important;
+}
+
+
